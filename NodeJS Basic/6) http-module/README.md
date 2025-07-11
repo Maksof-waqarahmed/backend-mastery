@@ -6,10 +6,11 @@ To use it, you must import the module:
 
 ```js
 const http = require('http');
+```
 
 🧪 Creating a Simple Web Server
 Here's how to create a basic HTTP server:
-
+```js
 const http = require('http');
 
 // Create the server
@@ -32,6 +33,7 @@ const server = http.createServer((req, res) => {
 server.listen(3000, () => {
     console.log('Server is running on http://localhost:3000');
 });
+```
 
 📂 Example Output
 Visit in your browser:
@@ -48,7 +50,7 @@ Forms the foundation of many popular frameworks like Express.js.
 While the http module is great for learning, in real-world applications, you typically use Express.js or similar frameworks built on top of this module for cleaner syntax and more features.
 
 🧪 You can also serve HTML:
-
+```js
 const fs = require('fs');
 
 const server = http.createServer((req, res) => {
@@ -60,5 +62,5 @@ const server = http.createServer((req, res) => {
     }
 });
 
-
+```
 You’ve just built your first custom server in Node.js using the built-in HTTP module. 🚀
