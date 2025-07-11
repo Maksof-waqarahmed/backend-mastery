@@ -7,37 +7,46 @@ To use it, you need to import it:
 ```js
 const fs = require('fs');
 const path = require('path');
+```
 
 🗂️ Working with Files (Sync and Async)
 Node.js supports both synchronous and asynchronous methods for file handling.
 
 📁 Create Folder (Synchronous)
-
+```js
 const newFolderPath = path.join(__dirname, 'files');
 
 if (!fs.existsSync(newFolderPath)) {
     fs.mkdirSync(newFolderPath);
     console.log("Folder Created Successfully");
 }
+```
 
 📝 Write to File (Sync)
+```js
 const filePath = path.join(newFolderPath, 'name.txt');
 fs.writeFileSync(filePath, "waqar");
+```
 
 📖 Read File Content (Sync)
+```js
 const readFileContent = fs.readFileSync(filePath, 'utf-8');
 console.log("File Content:", readFileContent);
+```
 
 ➕ Append to File (Sync)
+```js
 fs.appendFileSync(filePath, "\nThis is a new name\nAhmed");
 const updatedContent = fs.readFileSync(filePath, 'utf-8');
 console.log("Updated File Content:", updatedContent);
+```
 
 ⚙️ Asynchronous File Operations
 Asynchronous methods use callbacks and are non-blocking (better for performance in large-scale apps).
 
 ✍️ Write, Read, Append (Async)
 
+```js
 const asyncFilePath = path.join(newFolderPath, 'async.txt');
 
 fs.writeFile(asyncFilePath, "Hello! from Async file", (err) => {
@@ -59,7 +68,7 @@ fs.writeFile(asyncFilePath, "Hello! from Async file", (err) => {
         console.log("Updated Data:", data);
     });
 });
-
+```
 
 🔍 Summary of Common File System Methods
 
