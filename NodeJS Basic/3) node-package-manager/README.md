@@ -16,10 +16,14 @@ You can generate it using `npm`:
 #### 🔹 Option 1: Manual setup (step-by-step)
 ```bash
 npm init
+```
 
 This command will ask you a few questions (like project name, version, entry point, etc.) and create the package.json file.
 
+```bash
 npm init -y
+```
+
 This auto-generates a package.json file with default values.
 
 📦 Dependencies vs. Dev Dependencies
@@ -33,9 +37,10 @@ npm install express
 
 🧪 devDependencies
 These are used only during development, such as testing libraries, linters, and bundlers (e.g., nodemon, jest, eslint).
-
+```bash
 npm install nodemon --save-dev
 ➡️ This adds nodemon to the devDependencies section.
+```
 
 🔧 Common npm Commands
 | Task                      | Command                          |
@@ -57,7 +62,7 @@ npm ERR! 404 Not Found - GET https://registry.npmjs.org/expresss - Not found
 This happens because npm checks its official registry (npmjs.com) to find the package. If the package name doesn’t exist in the registry, it throws an error.
 
 📂 Example package.json
-
+```json
 {
   "name": "my-node-project",
   "version": "1.0.0",
@@ -76,6 +81,6 @@ This happens because npm checks its official registry (npmjs.com) to find the pa
   "author": "Rana",
   "license": "ISC"
 }
-
+```
 🧠 Remember:
 Every time you install a package using npm install, it automatically updates package.json and package-lock.json with exact version info.
