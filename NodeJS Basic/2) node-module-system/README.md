@@ -14,10 +14,12 @@ This is the **traditional and widely-used** module system in Node.js.
 // math.js — exporting a function
 const add = (a, b) => a + b;
 module.exports = { add };
-
+```
+```js
 // app.js — importing the function
 const math = require('./math');
 console.log(math.add(2, 3)); // Output: 5
+```
 
 🔸 Features of CommonJS:
 Uses require() to import modules.
@@ -29,12 +31,15 @@ Default in .js files unless specified otherwise.
 This follows the standard ES6 module syntax and is natively supported in recent Node.js versions.
 
 ✅ How to use ESM
+```js
 // math.mjs — exporting
 export const add = (a, b) => a + b;
-
+```
+```js
 // app.mjs — importing
 import { add } from './math.mjs';
 console.log(add(2, 3)); // Output: 5
+```
 
 🔸 Features of ESM:
 Uses import and export syntax.
@@ -45,10 +50,11 @@ Supports top-level await.
 You have two options:
 Rename files to .mjs
 Or set this in package.json:
+```json
 {
   "type": "module"
 }
-
+```
 
 | Feature           | CommonJS          | ES Modules (ESM)                       |
 | ----------------- | ----------------  | -------------------------------------- |
@@ -62,10 +68,11 @@ Or set this in package.json:
 🧠 What Happens Internally in CommonJS?
 Node.js wraps every module in a special function like this:
 
+```js
 (function(exports, require, module, __filename, __dirname) {
   // your module code
 });
-
+```
 
 These special variables are:
 
