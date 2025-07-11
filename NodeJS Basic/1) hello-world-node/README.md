@@ -16,12 +16,14 @@ After installation, verify the installation:
 node -v    # To check Node.js version
 npm -v     # To check npm (Node Package Manager) version
 
+```
+
 ▶️ Running JavaScript with Node.js
 You can run any .js file using the following command:
 
 ```bash
 node filename.js
-
+```
 Example:
 
 Example:
@@ -31,3 +33,4 @@ console.log("Hello from Node.js");
 node hello.js
 ✅ Output:
 Hello from Node.js
+```
