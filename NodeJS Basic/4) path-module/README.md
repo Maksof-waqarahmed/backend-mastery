@@ -6,47 +6,63 @@ To use it, you must first import it:
 
 ```js
 const path = require('path');
-
+```
 🧪 Common path Methods
 Let’s explore the most commonly used methods with practical examples:
 
 🔹 path.dirname(__filename)
 📌 Returns the directory name of the current file.
 
+```js
 console.log("Directory Name:", path.dirname(__filename));
+```
 ✅ Output:
 /Users/rana/projects/my-app
 
 🔹 path.basename(__filename)
 📌 Returns the file name (with extension) from the full path.
+
+```js
 console.log("File Name:", path.basename(__filename));
+```
 ✅ Output:
 index.js
 
 🔹 path.extname(__filename)
 📌 Returns the file extension (e.g. .js, .html).
+```js
 console.log("File Extension:", path.extname(__filename));
+```
 ✅ Output:
 .js
 
 🔹 path.resolve(...paths)
 📌 Resolves a sequence of paths into an absolute path.
+
+```js
 console.log("Resolve Path:", path.resolve('user', 'documents', 'a'));
+```
 ✅ Output:
 /current/working/directory/user/documents/a
 It always starts from the current working directory.
 
 🔹 path.normalize(path)
 📌 Normalizes a given path by resolving .., ., and redundant slashes.
+
+```js
 console.log("Normalize Path:", path.normalize('/user/.document/..../a/', './../', '/waqar'));
+```
 ✅ Output:
 /waqar
 
 🔹 path.join(...paths)
 📌 Joins all given path segments into a single path.
+
+```js
 const p = 'abc';
 const joinPath = path.join('/user', 'document', 'script', p);
 console.log("Join Path:", joinPath);
+```
 ✅ Output:
 /user/document/script/abc
 Unlike resolve, join does not return an absolute path by default.
