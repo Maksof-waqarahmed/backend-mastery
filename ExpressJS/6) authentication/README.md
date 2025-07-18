@@ -1,6 +1,6 @@
-# 🔐 Advanced JWT Authentication & Role-Based Authorization System
+🔐 Advanced JWT Authentication & Role-Based Authorization System + 📷 Admin Image Upload
 
-This is a secure and scalable user authentication & authorization system built using **Node.js**, **Express**, **MongoDB**, **JWT**, **bcrypt**, and **Zod**. It supports **role-based access control (RBAC)** and enforces strong password validation rules with secure hashing.
+This project is a secure and scalable JWT-based authentication & authorization system with role-based access control (RBAC) using Node.js, Express, MongoDB, Zod, bcrypt, and Cloudinary (via Multer). It now includes a protected admin-only image upload route.
 
 ---
 
@@ -13,38 +13,20 @@ This is a secure and scalable user authentication & authorization system built u
 - **bcryptjs** (password hashing)
 - **jsonwebtoken** (JWT-based access)
 - **dotenv** (env config)
+- **Cloudinary** (image hosting)
+- **Multer** (file upload middleware)
 
 ---
 
-## 📁 Folder Structure
-
-auth-system/
-├── controllers/
-│ └── auth-controller.js
-├── routes/
-│ ├── auth-routes.js
-│ └── home-routes.js
-├── middleware/
-│ └── auth-middleware.js
-├── models/
-│ └── user.js
-├── zod-schemas/
-│ └── index.js
-├── database/
-│ └── db.js
-├── helper/
-│ └── index.js
-├── .env
-├── server.js
-└── README.md
-
----
 ## 📜 .env Configuration
 
 ```env
 PORT=3000
 DB_URL=mongodb://localhost:27017/authSystem
 JWT_SECRET=your_super_secret_key
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
 ```
 
 
@@ -139,7 +121,9 @@ Attaches decoded user to req.user.
 4. Role-Based Access
 Each user has a role (USER or ADMIN).
 
-Future enhancement: Use req.user.role in middleware to allow/deny access.
+5. Image Upload
+Handled via Multer + uploaded to Cloudinary
+Only accessible by admins
 
 
 🛡️ JWT Details
