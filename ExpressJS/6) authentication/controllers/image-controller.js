@@ -17,7 +17,7 @@ const uplaodImage = async (req, res) => {
 
         await newlyUploadedImage.save()
 
-        sendResponse(true, "Image uploaded succesfully", newlyUploadedImage, 2001, res)
+        sendResponse(true, "Image uploaded succesfully", newlyUploadedImage, 201, res)
 
     } catch (error) {
         console.log("Error", error);

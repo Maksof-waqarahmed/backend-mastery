@@ -8,10 +8,10 @@ const multerStorage = multer.diskStorage({
     filename: function (req, file, cb) {
         cb(null, file.fieldname + "-" + Date.now() + path.extname(file.originalname));
     }
-})
+});
 
 const fileFilter = (req, file, cb) => {
-    if (file.mineType.startsWith('image')) {
+    if (file.mimetype.startsWith('image')) {
         cb(null, true)
     } else {
         cb(new Error('Not an image, Upload only images'));
