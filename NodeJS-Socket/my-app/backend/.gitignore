@@ -1,0 +1,13 @@
+.env
+
+node_modules/
+
+dist/
+# Logs
+package-lock.json
+npm-debug.log*
+
+pnpm-lock.yaml
+
+
+/src/generated/prisma
