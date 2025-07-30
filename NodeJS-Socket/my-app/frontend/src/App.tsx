@@ -1,16 +1,15 @@
-// import MainArea from "./components/dashboard"
-import AuthForm from "./components/login"
+import { Navigate, Route, Routes } from "react-router-dom"
+import Login from "./pages/auth/login"
+import Register from "./pages/auth/register"
 
 function App() {
 
   return (
-    <>
-      <div>
-        <AuthForm />
-        {/* <MainArea /> */}
-
-      </div>
-    </>
+    <Routes>
+      <Route path="/" element={<Navigate to="/Login" />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+    </Routes>
   )
 }
 

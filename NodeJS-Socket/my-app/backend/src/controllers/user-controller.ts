@@ -1,43 +1,41 @@
 import { Request, Response } from "express";
+import { z } from "zod";
 import { userSignin, userSignup } from "../zod-schemas/user-schema";
-import { comparePassword, hashPassword, sendResponse } from "../lib/utils";
+import { comparePassword, generateToken, hashPassword, sendResponse } from "../lib/utils";
 import { prisma } from "../lib/db";
 
 
 
-const userLogin = async (req: Request, res: Response) => {
+export const userLogin = async (req: Request, res: Response) => {
     try {
-        const isValidFields = userSignin.safeParse(req.body);
+        const parsed = userSignin.safeParse(req.body);
+        if (!parsed.success) {
+            return sendResponse(res, 400, "error", 'Invalid input data ' + z.treeifyError(parsed.error));
+        }
 
-        if (!isValidFields.success) return sendResponse(res, 400, 'Invalid input data ' + isValidFields.error);
+        const { email, password: userPassword } = parsed.data;
 
-        const { email, password: userPassword } = isValidFields.data;
+        const user = await prisma.user.findUnique({ where: { email } });
 
-        const userAlreadyExists = await prisma.user.findFirst({
-            where: { email }
-        })
+        if (!user) return sendResponse(res, 400, "error", 'User not found with this email');
 
-        if (!userAlreadyExists) return sendResponse(res, 400, 'User Not Found with this email');
+        const isValidPassword = await comparePassword(userPassword, user.password!);
+        if (!isValidPassword) return sendResponse(res, 400, "error", 'Invalid password');
 
-        const isValidPassword = await comparePassword(userPassword, userAlreadyExists.password!);
+        const safeUser = {
+            id: user.id,
+            name: user.name,
+            number: user.number,
+            role: user.isAdmin,
+        };
 
-        if (!isValidPassword) return sendResponse(res, 400, 'Invalid password');
+        const token = generateToken(safeUser);
+        if (!token) return sendResponse(res, 500, "error", 'Failed to generate token');
 
-        const user = await prisma.user.findFirst({
-            where: { email }
-        })
-
-        const { password, ...payload } = user!;
-
-        // Generate JWT token
-        // const token = generateToken(payload);
-
-
-
-        return sendResponse(res, 201, 'User login successfully', user);
+        return sendResponse(res, 200, "success", 'Login successful', token);
 
     } catch (error: any) {
-        sendResponse(res, 500, 'Internal Server Error ' + error.message);
+        return sendResponse(res, 500, "error", 'Internal Server Error', error.message);
     }
 }
 
@@ -45,28 +43,32 @@ export const userRegister = async (req: Request, res: Response) => {
     try {
         const isValidFields = userSignup.safeParse(req.body);
 
-        if (!isValidFields.success) return sendResponse(res, 400, 'Invalid input data ' + isValidFields.error);
+        if (!isValidFields.success) return sendResponse(res, 400, "error", 'Invalid input data ' + z.treeifyError(isValidFields.error));
 
-        const { email, fullName, password } = isValidFields.data;
+        const { email, fullName, password, number } = isValidFields.data;
 
-        const userAlreadyExists = await prisma.user.findFirst({
-            where: { email }
-        })
+        console.log(email, fullName, password);
 
-        if (userAlreadyExists) return sendResponse(res, 400, 'User already exists with this email');
+        const userAlreadyExists = await prisma.user.findFirst({ where: { email } });
 
-        const hashedPassword = hashPassword(password);
-        const user = await prisma.user.create({
+        if (userAlreadyExists) return sendResponse(res, 400, "error", 'User already exists with this email');
+
+        const hashedPassword = await hashPassword(password);
+        if (!hashedPassword) return sendResponse(res, 500, "error", 'Failed to hash password');
+
+
+        await prisma.user.create({
             data: {
                 email,
                 name: fullName,
-                password: hashedPassword
+                password: hashedPassword,
+                number
             }
         });
 
-        return sendResponse(res, 201, 'User created successfully', user);
+        return sendResponse(res, 201, "success", 'User created successfully');
 
     } catch (error: any) {
-        sendResponse(res, 500, 'Internal Server Error ' + error.message);
+        sendResponse(res, 500, "error", 'Internal Server Error ' + error.message);
     }
 }
