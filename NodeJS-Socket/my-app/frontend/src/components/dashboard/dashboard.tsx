@@ -3,7 +3,7 @@ import MainArea from "./main-area";
 import SideBar from "./side-bar";
 import { io } from 'socket.io-client';
 
-const Dashboard = () => {
+const DashboardComponent = () => {
     useEffect(() => {
         const socket = io('http://localhost:4000');
         const userName = "Waqar Ahmed";
@@ -24,4 +24,4 @@ const Dashboard = () => {
     );
 };
 
-export default Dashboard;
+export default DashboardComponent;

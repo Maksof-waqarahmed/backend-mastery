@@ -31,12 +31,12 @@ export default function LoginAuthForm() {
         }
         const response = await fetcher('api/auth/login', { method: "POST", body: userData });
 
+
         if (response.status == "error") {
             setError(response.message);
         }
 
         if (response.status == "success") {
-            console.log("Response", response)
             setError(null);
             setLoading(true);
             setTimeout(() => {

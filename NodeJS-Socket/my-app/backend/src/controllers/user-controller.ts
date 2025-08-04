@@ -29,10 +29,19 @@ export const userLogin = async (req: Request, res: Response) => {
             role: user.isAdmin,
         };
 
+
         const token = generateToken(safeUser);
         if (!token) return sendResponse(res, 500, "error", 'Failed to generate token');
 
-        return sendResponse(res, 200, "success", 'Login successful', token);
+        // HTTP-only cookie set karna
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 1000 * 60 * 15, 
+        });
+
+        return sendResponse(res, 200, "success", 'Login successful');
 
     } catch (error: any) {
         return sendResponse(res, 500, "error", 'Internal Server Error', error.message);
