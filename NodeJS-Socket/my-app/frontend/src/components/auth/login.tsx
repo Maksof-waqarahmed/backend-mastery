@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom'
 import { fetcher } from "../../lib/fetcher";
+import { useAuth } from "../../hooks/auth-context ";
 interface UserData {
     email: string | null;
     password?: string | null;
@@ -13,6 +14,7 @@ export default function LoginAuthForm() {
         password: null,
     })
 
+    const { refetchUser } = useAuth(); 
     const navigator = useNavigate();
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,6 +41,7 @@ export default function LoginAuthForm() {
         if (response.status == "success") {
             setError(null);
             setLoading(true);
+            await refetchUser(); 
             setTimeout(() => {
                 setLoading(false);
                 navigator('/dashboard');

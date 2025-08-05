@@ -34,3 +34,7 @@ export const comparePassword = async (password: string, hashedPassword: string) 
 export const generateToken = (payload: any) => {
     return jwt.sign(payload, secret, { expiresIn: "15m" })
 }
+
+export const verifyToken = (token: string) => {
+    return jwt.verify(token, secret)
+}

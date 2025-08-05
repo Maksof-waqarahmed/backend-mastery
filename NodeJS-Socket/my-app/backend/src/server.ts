@@ -2,6 +2,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import authRoute from './routes/auth-route';
 import userRoute from './routes/user-route';
 
 import { Server } from 'socket.io';
@@ -13,6 +15,7 @@ app.use(cors({
     origin: 'http://localhost:5173',
     credentials: true
 }));
+app.use(cookieParser());
 
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -25,14 +28,14 @@ const io = new Server(server, {
 // Middleware to parse JSON requests
 app.use(express.json());
 
-app.use('/api/auth', userRoute);
+app.use('/api/auth', authRoute);
+app.use('/api/user', userRoute);
 
 io.on('connection', (socket) => {
-    console.log('A user connected:', socket.id);
 
-    socket.on('', () => {
+    socket.on('userJoin', (userName) => {
         // Handle custom events here
-        console.log('Custom event received');
+        console.log(`User joined: ${userName}`);
     })
 })
 
