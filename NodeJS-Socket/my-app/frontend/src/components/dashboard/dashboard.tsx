@@ -1,18 +1,21 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import MainArea from "./main-area";
-import SideBar from "./side-bar";
 import { io } from 'socket.io-client';
 import type { User } from "../../types/user";
 import { fetcher } from "../../lib/fetcher";
+import Layout from "./layout";
 interface DashboardProps {
     user: User | null | false;
 }
 const DashboardComponent = ({ user }: DashboardProps) => {
+    const [users, setUsers] = useState<User[]>([]);
+    const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-    let users = [];
+
     const fetchUsers = async () => {
         try {
-            users = await fetcher('api/user/getAll');
+            const respone = await fetcher('api/user/getAll');
+            setUsers(respone.data.users);
         } catch (error) {
             console.error("Error fetching users:", error);
             return [];
@@ -30,12 +33,16 @@ const DashboardComponent = ({ user }: DashboardProps) => {
         };
     }, []);
 
+    const handleUserSelect = (selectedUser: User) => {
+        setSelectedUser(selectedUser);
+    }
 
     return (
-        <div className="flex h-screen overflow-hidden bg-gray-100">
-            <SideBar />
-            <MainArea />
-        </div>
+        <>
+            <Layout users={users} onUserSelect={handleUserSelect}>
+                <MainArea selectedUser={selectedUser} />
+            </Layout>
+        </>
     );
 };
 

@@ -1,6 +1,8 @@
+import type { User } from "../../types/user";
+
 interface GroupModalProps {
     setIsModalOpen: () => void; // changed from (isOpen: boolean) => void
-    users: string[];
+    users: User[];
     groupName: string;
     setGroupName: (name: string) => void;
     selectedUsers: string[];
@@ -51,10 +53,10 @@ const GroupModal = ({
                         <label key={i} className="flex items-center gap-2 mb-1 cursor-pointer">
                             <input
                                 type="checkbox"
-                                checked={selectedUsers.includes(user)}
-                                onChange={() => toggleUserSelection(user)}
+                                checked={selectedUsers.includes(user.name)}
+                                onChange={() => toggleUserSelection(user.name)}
                             />
-                            <span>{user}</span>
+                            <span>{user.name}</span>
                         </label>
                     ))}
                 </div>

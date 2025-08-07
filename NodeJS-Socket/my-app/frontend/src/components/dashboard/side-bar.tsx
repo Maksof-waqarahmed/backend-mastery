@@ -1,12 +1,17 @@
 import { useState } from "react";
 import GroupModal from "./group-modal";
+import type { User } from "../../types/user";
 
-const users = ["Waqar", "Ali", "Fatima", "John", "Zara"];
-
-const SideBar = () => {
+// const users = ["Waqar", "Ali", "Fatima", "John", "Zara"];
+interface UserProps {
+    users: User[];
+    onUserSelect: (user: User) => void;
+}
+const SideBar = ({ users, onUserSelect }: UserProps) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [groupName, setGroupName] = useState("");
     const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+
 
 
 
@@ -38,17 +43,18 @@ const SideBar = () => {
 
                 {/* Chat List */}
                 <div className="flex-1 overflow-y-auto bg-gray-100 p-4 space-y-3">
-                    {users.map((name, i) => (
+                    {users.map((user, i) => (
                         <div
-                            key={i}
+                            key={user.id || i}
                             className="flex items-center gap-3 bg-white rounded-lg p-3 shadow hover:bg-gray-200 transition-all cursor-pointer"
+                            onClick={() => onUserSelect(user)}
                         >
                             <img
                                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtuphMb4mq-EcVWhMVT8FCkv5dqZGgvn_QiA&s"
                                 alt="User"
                                 className="w-10 h-10 rounded-full object-cover"
                             />
-                            <span className="font-semibold text-gray-800">{name}</span>
+                            <span className="font-semibold text-gray-800">{user.name}</span>
                         </div>
                     ))}
                 </div>
