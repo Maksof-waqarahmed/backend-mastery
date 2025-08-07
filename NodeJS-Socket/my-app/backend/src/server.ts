@@ -8,6 +8,7 @@ import userRoute from './routes/user-route';
 
 import { Server } from 'socket.io';
 import http from 'http';
+import { saveMessage } from './quries/chat';
 
 const app = express();
 
@@ -36,6 +37,16 @@ io.on('connection', (socket) => {
     socket.on('userJoin', (userName) => {
         // Handle custom events here
         console.log(`User joined: ${userName}`);
+    })
+
+    socket.on('userMessage', (message) => {
+        // Handle custom events here
+        if (message && message.sender && message.receiver && message.message) {
+            saveMessage(message)
+            console.log("Message from user: inner", message);
+        }
+        // // Broadcast the message to all connected clients
+        // io.emit('newMessage', message);
     })
 })
 
