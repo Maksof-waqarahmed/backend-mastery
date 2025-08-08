@@ -1,12 +1,20 @@
 import { useState } from "react";
-import type { User } from "../../types/user";
+import type { Message, User } from "../../types/user";
+import { IncomingMessage, OutgoingMessage } from "./messages";
 
 interface MainAreaProps {
   selectedUser: User | null;
-  onMessageSend?: (message: string) => void;
+  currentUserId: string; // ✅ Current logged-in user ka ID
+  onMessageSend: (message: string) => void;
+  messages: Message[];
 }
 
-const MainArea = ({ selectedUser, onMessageSend }: MainAreaProps) => {
+const MainArea = ({
+  selectedUser,
+  currentUserId,
+  onMessageSend,
+  messages,
+}: MainAreaProps) => {
   const [message, setMessage] = useState("");
 
   const handleMessageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -15,11 +23,8 @@ const MainArea = ({ selectedUser, onMessageSend }: MainAreaProps) => {
 
   const sendMessage = (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!message.trim()) return;
-
-    onMessageSend?.(message);
-
+    onMessageSend(message);
     console.log("Message sent:", message);
     setMessage("");
   };
@@ -47,29 +52,13 @@ const MainArea = ({ selectedUser, onMessageSend }: MainAreaProps) => {
 
             {/* Chat Messages */}
             <div className="flex-1 px-6 py-4 overflow-y-auto space-y-4 bg-gray-50">
-              {/* Incoming Message */}
-              <div className="flex items-start gap-3">
-                <img
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtuphMb4mq-EcVWhMVT8FCkv5dqZGgvn_QiA&s"
-                  alt="User"
-                  className="w-10 h-10 rounded-full object-cover"
-                />
-                <div className="bg-white p-3 rounded-xl shadow text-gray-800 max-w-xs">
-                  Hello, how are you?
-                </div>
-              </div>
-
-              {/* Outgoing Message */}
-              <div className="flex items-end gap-3 justify-end">
-                <div className="bg-blue-100 p-3 rounded-xl shadow text-gray-800 max-w-xs">
-                  I'm fine, what about you?
-                </div>
-                <img
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtuphMb4mq-EcVWhMVT8FCkv5dqZGgvn_QiA&s"
-                  alt="User"
-                  className="w-10 h-10 rounded-full object-cover"
-                />
-              </div>
+              {messages.map((msg, index) =>
+                msg.sender === currentUserId ? (
+                  <OutgoingMessage key={index} text={msg.message} />
+                ) : (
+                  <IncomingMessage key={index} text={msg.message} />
+                )
+              )}
             </div>
 
             {/* Chat Input */}

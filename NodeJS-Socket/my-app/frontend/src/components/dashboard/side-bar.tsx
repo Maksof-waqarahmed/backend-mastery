@@ -1,19 +1,37 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GroupModal from "./group-modal";
 import type { User } from "../../types/user";
+import { useAuth } from "../../hooks/auth-context ";
+import { fetcher } from "../../lib/fetcher";
 
 // const users = ["Waqar", "Ali", "Fatima", "John", "Zara"];
 interface UserProps {
-    users: User[];
+    // users: User[];
     onUserSelect: (user: User) => void;
 }
-const SideBar = ({ users, onUserSelect }: UserProps) => {
+const SideBar = ({ onUserSelect }: UserProps) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [groupName, setGroupName] = useState("");
     const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+    const [users, setUsers] = useState<User[]>([]);
+    
+    const { user } = useAuth();
 
+    const fetchUsers = async () => {
+        try {
+            const respone = await fetcher("api/user/getAll");
 
+            const filteredUsers = respone.data.users.filter((u: User) => u.id !== user?.id);
 
+            setUsers(filteredUsers);
+        } catch (error) {
+            console.error("Error fetching users:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchUsers();
+    })
 
     function handleGroupNameChange(value: string) {
         console.log("Value from modal:", value);

@@ -4,3 +4,12 @@ export interface User {
     email: string;
     isAdmin: string;
 }
+
+export interface Message {
+    sender: string;
+    receiver?: string;
+    groupId?: string;
+    message: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+}

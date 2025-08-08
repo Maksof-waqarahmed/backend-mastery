@@ -1,67 +1,72 @@
-import { useEffect, useState } from "react";
-import MainArea from "./main-area";
-import { io } from 'socket.io-client';
+import { useEffect, useState, useRef } from "react";
+// import MainArea from "./main-area";
+import { io, Socket } from "socket.io-client";
 import type { User } from "../../types/user";
-import { fetcher } from "../../lib/fetcher";
 import Layout from "./layout";
+import MainArea from "./main-area";
+
 interface DashboardProps {
-    user: User | null | false;
+    user: User | null;
 }
+
+interface Message {
+    sender: string;
+    receiver: string;
+    message: string;
+}
+
 const DashboardComponent = ({ user }: DashboardProps) => {
-    const [users, setUsers] = useState<User[]>([]);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
-    const [userMessage, setUserMessage] = useState<string>("");
+    const [messages, setMessages] = useState<Message[]>([]);
+    const socketRef = useRef<Socket | null>(null);
 
-
-    const fetchUsers = async () => {
-        try {
-            const respone = await fetcher('api/user/getAll');
-            setUsers(respone.data.users);
-        } catch (error) {
-            console.error("Error fetching users:", error);
-            return [];
+    useEffect(() => {
+        const socket = io("http://localhost:4000");
+        socketRef.current = socket;
+    
+        if (user) {
+            socket.emit("userJoin", { name: user.name, id: user.id });
         }
-    }
-
-    useEffect(() => {
-        fetchUsers();
-        const socket = io('http://localhost:4000');
-
-        socket.emit('userJoin', user?.name);
-
-        return () => {
-            socket.disconnect();
-        };
-    }, []);
-
-    useEffect(() => {
-        const socket = io('http://localhost:4000');
-
-        socket.emit('userMessage', {
-            sender: user?.id,
-            receiver: selectedUser?.id,
-            message: userMessage
+    
+        socket.on("userJoined", (userInfo: { name: string; id: string }) => {
+            if (user?.id !== userInfo.id) {
+                alert(`${userInfo.name} has joined the chat!`);
+            }
         });
-
+    
+        socket.on("newMessage", (message) => {
+            console.log("New message received:", message);
+            setMessages((prev) => [...prev, message]);
+        });
+    
         return () => {
             socket.disconnect();
         };
-    }, [userMessage]);
+    }, [user]);
 
     const handleUserSelect = (selectedUser: User) => {
         setSelectedUser(selectedUser);
-    }
+    };
 
-    const handleMessageChange = (message: string) => {
-        setUserMessage(message);
+    const handleSendMessage = (message: string) => {
+        if (socketRef.current && user && selectedUser) {
+            socketRef.current.emit("userMessage", {
+                sender: user.id,
+                receiver: selectedUser.id,
+                message
+            });
+        }
     };
 
     return (
-        <>
-            <Layout users={users} onUserSelect={handleUserSelect}>
-                <MainArea selectedUser={selectedUser} onMessageSend={handleMessageChange} />
-            </Layout>
-        </>
+        <Layout onUserSelect={handleUserSelect}>
+            <MainArea
+                selectedUser={selectedUser}
+                onMessageSend={handleSendMessage}
+                messages={messages}
+                currentUserId={user?.id || ""}
+            />
+        </Layout>
     );
 };
 

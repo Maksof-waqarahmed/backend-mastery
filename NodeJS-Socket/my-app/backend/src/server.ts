@@ -32,21 +32,24 @@ app.use(express.json());
 app.use('/api/auth', authRoute);
 app.use('/api/user', userRoute);
 
+const userSockets = new Map();
+
 io.on('connection', (socket) => {
 
-    socket.on('userJoin', (userName) => {
-        // Handle custom events here
-        console.log(`User joined: ${userName}`);
+    socket.on('userJoin', (user) => {
+        userSockets.set(user.id, socket.id);
+        console.log(`User joined: ${user.name}`);
+        io.emit('userJoined', user);
     })
 
-    socket.on('userMessage', (message) => {
-        // Handle custom events here
+    socket.on('userMessage', async (message) => {
         if (message && message.sender && message.receiver && message.message) {
-            saveMessage(message)
-            console.log("Message from user: inner", message);
+            const newMessage = await saveMessage(message)
+            const receiverSocketId = userSockets.get(message.receiver);
+            if (receiverSocketId) {
+                io.to(receiverSocketId).emit('newMessage', newMessage);
+            }
         }
-        // // Broadcast the message to all connected clients
-        // io.emit('newMessage', message);
     })
 })
 

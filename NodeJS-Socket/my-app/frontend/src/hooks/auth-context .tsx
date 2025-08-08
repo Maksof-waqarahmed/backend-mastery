@@ -3,7 +3,7 @@ import { fetcher } from "../lib/fetcher";
 import type { User } from "../types/user";
 
 interface AuthContextType {
-    user: User | false | null;
+    user: User | null;
     loading: boolean;
     refetchUser: () => Promise<void>;
 }
@@ -15,7 +15,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-    const [user, setUser] = useState<User | false | null>(null);
+    const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
 
     const fetchUser = async () => {
@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             const res = await fetcher("api/user/me");
             setUser(res.data.user);
         } catch {
-            setUser(false);
+            setUser(null);
         } finally {
             setLoading(false);
         }
